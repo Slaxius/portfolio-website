@@ -2,11 +2,15 @@ import { useEffect, useRef, useState } from 'react'
 import emailjs from '@emailjs/browser'
 import {
   ArrowUpRight,
+  BarChart3,
+  Braces,
   CheckCircle2,
   Code2,
+  Database,
   Download,
   ExternalLink,
   GraduationCap,
+  Wrench,
   Mail,
   Menu,
   Moon,
@@ -80,13 +84,36 @@ const projects = [
 ]
 
 const skills = [
-  ['Programming Languages', 'Python, Java, C, JavaScript, HTML, CSS'],
-  ['Frameworks & Libraries', 'Vue.js, React.js, Bootstrap, Tailwind CSS'],
-  ['DevOps & Infrastructure', 'Git, GitLab CI/CD, Jenkins, Docker, Red Hat OpenShift, VMware Workstation, Linux'],
-  ['Monitoring & Observability', 'Grafana, Splunk'],
-  ['Databases', 'Microsoft SQL Server, Firebase Realtime Database'],
-  ['Developer Tools', 'Visual Studio Code, Eclipse, Postman, Figma'],
-  ['Soft Skills', 'Communication, Leadership, Adaptability, Problem-solving, Collaboration, Critical Thinking'],
+  {
+    name: 'Programming Languages',
+    technologies: [['Python', 'python'], ['Java', 'openjdk', 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/java/java-original.svg'], ['C', 'c'], ['Go', 'go'], ['JavaScript', 'javascript', 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg'], ['HTML', 'html5', 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg'], ['CSS', 'css3', 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original.svg']],
+    icon: Braces,
+  },
+  {
+    name: 'Frameworks & Libraries',
+    technologies: [['Vue.js', 'vuedotjs'], ['React.js', 'react'], ['Bootstrap', 'bootstrap'], ['Tailwind CSS', 'tailwindcss']],
+    icon: Code2,
+  },
+  {
+    name: 'DevOps & Infrastructure',
+    technologies: [['Git', 'git'], ['GitLab CI/CD', 'gitlab'], ['Jenkins', 'jenkins'], ['Docker', 'docker'], ['Red Hat OpenShift', 'redhatopenshift'], ['VMware Workstation', 'vmware'], ['Linux', 'linux']],
+    icon: Server,
+  },
+  {
+    name: 'Monitoring & Observability',
+    technologies: [['Grafana', 'grafana'], ['Splunk', 'splunk']],
+    icon: BarChart3,
+  },
+  {
+    name: 'Databases',
+    technologies: [['MySQL', 'mysql'], ['Microsoft SQL Server', 'microsoftsqlserver', 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/microsoftsqlserver/microsoftsqlserver-plain.svg'], ['Firebase Realtime Database', 'firebase']],
+    icon: Database,
+  },
+  {
+    name: 'Developer Tools',
+    technologies: [['Visual Studio Code', 'visualstudiocode', 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vscode/vscode-original.svg'], ['Eclipse', 'eclipseide'], ['Postman', 'postman'], ['Figma', 'figma']],
+    icon: Wrench,
+  },
 ]
 
 const experiences = [
@@ -118,6 +145,15 @@ function SocialLogo({ name }) {
     return <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M5.2 3.5A2.2 2.2 0 1 1 .8 3.5a2.2 2.2 0 0 1 4.4 0ZM1.1 8h4.2v13H1.1V8Zm6.8 0h4v1.8h.1c.6-1.1 2-2.2 4.1-2.2 4.3 0 5.1 2.8 5.1 6.4V21H17v-6.2c0-1.5 0-3.5-2.2-3.5s-2.5 1.7-2.5 3.4V21H7.9V8Z" /></svg>
   }
   return <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" strokeWidth="2" /><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" strokeWidth="2" /><circle cx="17.4" cy="6.7" r="1.1" fill="currentColor" /></svg>
+}
+
+function TechLogo({ name, slug, iconUrl }) {
+  return (
+    <span className="tech-chip">
+      <img src={iconUrl || `https://cdn.simpleicons.org/${slug}`} alt="" aria-hidden="true" loading="lazy" />
+      <span>{name}</span>
+    </span>
+  )
 }
 
 function BrandMark() {
@@ -495,7 +531,14 @@ function App() {
               <div><p className="card-label">Education</p><h3>Bina Nusantara University</h3><p>Undergraduate in Computer Science · Sep 2023 — Present</p></div>
             </div>
           </div>
-          <div className="skill-grid">{skills.map(([name, value]) => <div className="skill-row" key={name}><span>{name}</span><p>{value}</p></div>)}</div>
+          <div className="skill-grid">
+            {skills.map(({ name, technologies, icon: Icon }) => (
+              <div className="skill-row" key={name}>
+                <span className="skill-label"><Icon size={15} />{name}</span>
+                <div className="skill-technologies">{technologies.map(([technology, slug, iconUrl]) => <TechLogo key={technology} name={technology} slug={slug} iconUrl={iconUrl} />)}</div>
+              </div>
+            ))}
+          </div>
         </section>
 
         <section className="section section-muted reveal-on-scroll" id="experience">
