@@ -121,7 +121,32 @@ function SocialLogo({ name }) {
 }
 
 function BrandMark() {
-  return <svg className="brand-logo" viewBox="0 0 42 42" aria-label="Silverius Calvin logo"><path d="M29.5 9.5H16.8a7.3 7.3 0 0 0 0 14.6h8.1a7.3 7.3 0 0 1 0 14.6H12.5" /><path d="M12.5 32.5h12.7a7.3 7.3 0 0 0 0-14.6h-8.1a7.3 7.3 0 0 1 0-14.6h12.4" /></svg>
+  return (
+    <svg className="brand-logo" viewBox="18 18 144 144" fill="none" role="img" aria-label="Silverius Calvin logo">
+      <defs>
+        <linearGradient id="brand-aurora" x1="24" y1="18" x2="150" y2="158" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#7CF7D4" />
+          <stop offset="0.52" stopColor="#47D9F4" />
+          <stop offset="1" stopColor="#7C8CFF" />
+        </linearGradient>
+        <linearGradient id="brand-glass" x1="20" y1="18" x2="130" y2="145" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#FFFFFF" stopOpacity="0.2" />
+          <stop offset="0.45" stopColor="#7CF7D4" stopOpacity="0.08" />
+          <stop offset="1" stopColor="#7C8CFF" stopOpacity="0.18" />
+        </linearGradient>
+      </defs>
+      <g transform="translate(18 18)">
+        <rect x="0" y="0" width="144" height="144" rx="34" fill="var(--logo-surface)" fillOpacity="0.72" stroke="var(--logo-border)" strokeOpacity="0.62" strokeWidth="2" />
+        <rect x="2" y="2" width="140" height="140" rx="32" fill="url(#brand-glass)" />
+        <path d="M25 25C50 8 94 9 119 27" stroke="#FFFFFF" strokeOpacity="0.18" strokeWidth="3" strokeLinecap="round" />
+        <path d="M93 35H57C42 35 34 44 34 57C34 69 42 77 57 77H87C101 77 110 85 110 98C110 111 101 120 87 120H48" stroke="url(#brand-aurora)" strokeWidth="10" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M49 57H83M61 98H96" stroke="var(--logo-cutout)" strokeWidth="5" strokeLinecap="round" />
+        <path d="M49 57H78M66 98H96" stroke="url(#brand-aurora)" strokeWidth="3.5" strokeLinecap="round" />
+        <circle cx="110" cy="35" r="5" fill="#7CF7D4" />
+        <circle cx="34" cy="120" r="5" fill="#7C8CFF" />
+      </g>
+    </svg>
+  )
 }
 
 function AmbientEffects() {
@@ -169,11 +194,29 @@ function AmbientEffects() {
   )
 }
 
+function handleMessageInput(event) {
+  const textarea = event.currentTarget
+  textarea.style.height = 'auto'
+  textarea.style.height = `${Math.min(textarea.scrollHeight, 240)}px`
+}
+
+function getFieldError(name, value) {
+  const trimmedValue = value.trim()
+  if (name === 'email') {
+    if (!trimmedValue) return 'Please enter your email address.'
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedValue)) return 'Please enter a valid email address.'
+  } else if (!trimmedValue) {
+    return `Please enter your ${name}.`
+  }
+  return ''
+}
+
 function App() {
   const [darkMode, setDarkMode] = useState(true)
   const [menuOpen, setMenuOpen] = useState(false)
   const [filter, setFilter] = useState('All')
   const [sendState, setSendState] = useState('idle')
+  const [validationErrors, setValidationErrors] = useState({})
   const [activeSection, setActiveSection] = useState(null)
   const progressRef = useRef(null)
   const scrollDirectionRef = useRef('down')
@@ -247,11 +290,66 @@ function App() {
     }
   }, [])
 
+  useEffect(() => {
+    if (sendState !== 'sent') return undefined
+
+    const fadeTimeoutId = window.setTimeout(() => setSendState('fading'), 4000)
+    const removeTimeoutId = window.setTimeout(() => setSendState('idle'), 4500)
+    return () => {
+      window.clearTimeout(fadeTimeoutId)
+      window.clearTimeout(removeTimeoutId)
+    }
+  }, [sendState])
+
   const filteredProjects =
     filter === 'All' ? projects : projects.filter((project) => project.category === filter)
 
+  const handleFieldInput = (event) => {
+    const { name, value } = event.currentTarget
+    const error = getFieldError(name, value)
+    setValidationErrors((currentErrors) => {
+      if (!error && !currentErrors[name]) return currentErrors
+      return { ...currentErrors, [name]: error }
+    })
+  }
+
+  const handleMessageFieldInput = (event) => {
+    handleMessageInput(event)
+    handleFieldInput(event)
+  }
+
   const handleSubmit = async (event) => {
     event.preventDefault()
+
+    const form = event.currentTarget
+    const messageField = form.querySelector('textarea[name="message"]')
+
+    const name = form.elements.namedItem('name').value.trim()
+    const email = form.elements.namedItem('email').value.trim()
+    const subject = form.elements.namedItem('subject').value.trim()
+    const message = messageField.value.trim()
+
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    const errors = {}
+
+    if (!name) errors.name = 'Please enter your name.'
+
+    if (!email) {
+      errors.email = 'Please enter your email address.'
+    } else if (!emailPattern.test(email)) {
+      errors.email = 'Please enter a valid email address.'
+    }
+
+    if (!subject) errors.subject = 'Please enter a subject.'
+    if (!message) errors.message = 'Please enter a message.'
+
+    if (Object.keys(errors).length > 0) {
+      setValidationErrors(errors)
+      setSendState('validation-error')
+      return
+    }
+
+    setValidationErrors({})
     setSendState('sending')
 
     const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID
@@ -263,9 +361,51 @@ function App() {
       return
     }
 
+    // Escape HTML to prevent unwanted HTML injection
+    const escapeHtml = (text) =>
+      text.replace(/[&<>"']/g, (char) => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;',
+      }[char]))
+
+    // Convert message into HTML with controlled paragraph spacing
+    const messageHtml = message
+      .replace(/\r\n/g, '\n')
+      .split(/\n\s*\n/)
+      .map((paragraph) => {
+        const lines = paragraph
+          .split('\n')
+          .map((line) => escapeHtml(line.trim()))
+          .filter(Boolean)
+          .join('<br>')
+
+        return `<p style="margin:0 0 18px 0;padding:0;line-height:26px;">${lines}</p>`
+      })
+      .join('')
+
     try {
-      await emailjs.sendForm(serviceId, templateId, event.currentTarget, { publicKey })
-      event.currentTarget.reset()
+      await emailjs.send(
+        serviceId,
+        templateId,
+        {
+          name,
+          email,
+          subject,
+          message,
+          message_html: messageHtml,
+        },
+        { publicKey }
+      )
+
+      form.reset()
+
+      if (messageField) {
+        messageField.style.height = ''
+      }
+
       setSendState('sent')
     } catch (error) {
       console.error('EmailJS contact form failed:', error)
@@ -375,14 +515,17 @@ function App() {
         <section className="contact-section reveal-on-scroll" id="contact">
           <div className="container contact-grid">
             <div><p className="eyebrow">04 / Contact</p><h2>Have an idea?<br /><em>Let&apos;s make it real.</em></h2><p className="contact-copy">I&apos;m always open to discussing new projects, creative ideas, or opportunities to be part of something meaningful.</p><a className="email-link" href="mailto:silveriuscalvin35@gmail.com"><Mail size={18} /> silveriuscalvin35@gmail.com</a></div>
-            <form className="contact-form" onSubmit={handleSubmit}>
-              <div className="form-row"><label>Name<input name="name" required placeholder="Your name" /></label><label>Email<input name="email" type="email" required placeholder="you@example.com" /></label></div>
-              <label>Subject<input name="subject" required placeholder="What can I help with?" /></label>
-              <label>Message<textarea name="message" required rows="4" placeholder="Tell me a little about your project..." /></label>
+            <form className="contact-form" noValidate onSubmit={handleSubmit}>
+              <div className="form-row">
+                <label>Name<input name="name" autoComplete="name" spellCheck={false} placeholder="Your name" onInput={handleFieldInput} />{validationErrors.name && <span className="field-error">{validationErrors.name}</span>}</label>
+                <label>Email<input name="email" type="email" autoComplete="email" placeholder="you@example.com" onInput={handleFieldInput} />{validationErrors.email && <span className="field-error">{validationErrors.email}</span>}</label>
+              </div>
+              <label>Subject<input name="subject" autoComplete="off" placeholder="What can I help with?" onInput={handleFieldInput} />{validationErrors.subject && <span className="field-error">{validationErrors.subject}</span>}</label>
+              <label>Message<textarea name="message" autoComplete="off" rows="4" placeholder="Tell me a little about your project..." onInput={handleMessageFieldInput} />{validationErrors.message && <span className="field-error">{validationErrors.message}</span>}</label>
               <button className="button button-primary" type="submit" disabled={sendState === 'sending'}>
                 {sendState === 'sending' ? 'Sending...' : <><Send size={16} /> Send message</>}
               </button>
-              {sendState === 'sent' && <p className="form-status success"><CheckCircle2 size={15} /> Message sent successfully.</p>}
+              {(sendState === 'sent' || sendState === 'fading') && <p className={`form-status success${sendState === 'fading' ? ' fading' : ''}`}><CheckCircle2 size={15} /> Message sent successfully.</p>}
               {sendState === 'configuration-error' && <p className="form-status error">Email service is not configured yet. Please add the EmailJS environment variables.</p>}
               {sendState === 'error' && <p className="form-status error">Message could not be sent. Please try again later.</p>}
             </form>

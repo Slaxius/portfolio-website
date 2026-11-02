@@ -1,38 +1,25 @@
-# Silverius Calvin Portfolio
+# 🌐 Personal Portfolio Website
 
-React, Vite, Tailwind CSS, and EmailJS portfolio website.
+This is the personal portfolio website of **Silverius Calvin**, created to present his background, skills, experience, selected projects, and interests in technology.
 
-## Run locally
+The website serves as a digital CV and a central place for recruiters, collaborators, and visitors to learn more about his work and get in touch.
 
-Use `npm.cmd` in PowerShell if the `npm` command is blocked by the Windows execution policy:
+## ✨ Features
 
-```powershell
-cd "C:\Users\silverius.calvin\Documents\Calvin's\Portofolio-Website\portfolio-website-v2"
-npm.cmd install
-npm.cmd run dev
-```
+- **Home Section** — Introduction with personal branding.
+- **About Section** — Personal background, education, and areas of interest.
+- **Experience Section** — Professional and teaching experience.
+- **Projects Section** — Selected development and design projects.
+- **Contact Section** — Direct contact form for inquiries and opportunities.
+- **Responsive Design** — Optimized for desktop, tablet, and mobile devices.
+- **Light and Dark Themes** — Theme options for a comfortable browsing experience.
 
-Open the local URL printed by Vite, usually `http://localhost:5173`.
+## 🎯 Purpose
 
-## EmailJS setup
+This portfolio was created to showcase Silverius Calvin’s journey as an undergraduate Computer Science student at Bina Nusantara University, with a growing focus on DevOps, cloud infrastructure, networking, and web development.
 
-The contact form sends directly through EmailJS to the email account connected to the EmailJS service. It does not open Outlook or Gmail, and no Gmail password is stored in this project.
+It highlights his capabilities, projects, and experiences while providing an easy way for recruiters, collaborators, and visitors to connect.
 
-For the full configuration walkthrough, see [EMAILJS_SETUP.md](./EMAILJS_SETUP.md).
+## 🔗 Website
 
-1. Create an account at [emailjs.com](https://www.emailjs.com/).
-2. Add an email service and connect the Gmail account that should receive portfolio messages.
-3. Create an email template with these variables:
-   - `name`
-   - `email`
-   - `subject`
-   - `message`
-4. Copy `.env.example` to `.env`.
-5. Fill in the EmailJS Service ID, Template ID, and Public Key.
-6. Restart Vite after changing `.env`:
-
-```powershell
-npm.cmd run dev
-```
-
-The `.env` file is ignored by Git. Never commit it.
+[Visit Silverius Calvin’s Portfolio](https://silveriuscalvin.vercel.app/)
