@@ -79,7 +79,7 @@ const projects = [
       'A collaborative redesign for the Binus Student Learning Community website focused on usability, clarity, and visual consistency.',
     stack: ['Figma', 'UI/UX', 'Teamwork'],
     image: '/assets/portfolio/BSLC-MainWeb-Figma.png',
-    link: 'https://www.figma.com/design/Y1BzEWbLpupWgb6nUuAbpN/Web-Main-BSLC-2025',
+    link: 'https://www.figma.com/design/cZDAYcvwFVCtWgfK1DmDvw/Web-Main-BSLC-2025--Copy-?m=auto&t=Rh7uHaCTPUhJes49-1',
   },
   {
     title: 'MathOLearn — Figma',
