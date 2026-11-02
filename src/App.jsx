@@ -62,6 +62,16 @@ const projects = [
     link: 'https://github.com/Slaxius/Asphatl9',
   },
   {
+    title: 'Asphalt 9: ReJends — Figma',
+    category: 'Design',
+    type: 'Visual redesign',
+    description:
+      'A visual redesign concept for Asphalt 9: ReJends, exploring interface layouts, visual direction, and user flows in Figma.',
+    stack: ['Figma', 'UI/UX', 'Prototyping'],
+    image: '/assets/portfolio/Asphatl9-Figma.png',
+    link: 'https://www.figma.com/design/icgpT3442JUy57BrpCWrlw/Asphatl9?node-id=0-1&t=6dwxZmKPB8YFrV4C-1',
+  },
+  {
     title: 'BSLC Main Website',
     category: 'Design',
     type: 'UI/UX redesign',
@@ -518,7 +528,7 @@ function App() {
           </div>
         </section>
 
-        <section className="section container reveal-on-scroll" id="about">
+        <section className="section container reveal-on-scroll" id="oabout">
           <div className="section-heading"><p className="eyebrow">01 / About me</p><h2>Curious by nature,<br /><em>intentional</em> by design.</h2></div>
           <div className="about-grid">
             <div className="about-copy">
