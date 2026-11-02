@@ -49,7 +49,7 @@ const projects = [
       'An interactive learning application with practice exercises, discussion forums, notifications, and gamification features.',
     stack: ['React.js', 'CSS', 'Figma'],
     image: '/assets/portfolio/MathOLearn-Website.png',
-    link: 'https://github.com/Slaxius/MathOLearn',
+    link: 'https://math-o-learn.vercel.app/',
   },
   {
     title: 'Asphalt 9: ReJends',
@@ -59,7 +59,7 @@ const projects = [
       'A responsive, original redesign inspired by Asphalt 9: Legends, with game information, event updates, and media sections.',
     stack: ['HTML', 'CSS', 'JavaScript'],
     image: '/assets/portfolio/Asphatl9-Rejends-Thumbnail.png',
-    link: 'https://github.com/Slaxius/Asphatl9',
+    link: 'https://asphatl9-rejends.vercel.app/',
   },
   {
     title: 'Asphalt 9: ReJends — Figma',
